@@ -22,6 +22,8 @@ if __name__ == '__main__':
             password=settings.password,
             proxy_host=settings.proxy_host,
             proxy_port=settings.proxy_port,
+            host=settings.host,
+            port=settings.port,
             timeout_seconds=settings.timeout_seconds,
             buffer_size_bytes=settings.buffer_size_bytes
         )
