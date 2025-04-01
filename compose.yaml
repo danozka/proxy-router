@@ -1,0 +1,34 @@
+services:
+  proxy-router:
+    build:
+      args:
+        - DOCKER_REGISTRY_MIRROR=${DOCKER_REGISTRY_MIRROR}
+        - PYTHON_VERSION=3.11
+      context: .
+      dockerfile: ./Dockerfile
+      secrets:
+        - pip_index_url
+        - pip_proxy
+        - pip_trusted_host
+    container_name: proxy-router
+    environment:
+      - USER=${USER}
+      - PASSWORD=${PASSWORD}
+      - PROXY_HOST=${PROXY_HOST}
+      - PROXY_PORT=${PROXY_PORT}
+      - HOST=0.0.0.0
+      - PORT=8888
+      - TIMEOUT_SECONDS=2.0
+      - BUFFER_SIZE_BYTES=4096
+      - LOGGING_LEVEL=INFO
+    image: proxy-router:latest
+    ports:
+      - "8888:8888"
+    restart: unless-stopped
+secrets:
+  pip_index_url:
+    environment: PIP_INDEX_URL
+  pip_proxy:
+    environment: PIP_PROXY
+  pip_trusted_host:
+    environment: PIP_TRUSTED_HOST

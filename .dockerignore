@@ -1,0 +1,13 @@
+**/__pycache__/
+**/.pytest_cache/
+.git/
+.idea/
+.run/
+.venv/
+.dockerignore
+.env
+.gitignore
+*compose.yaml
+*Dockerfile
+LICENSE
+README.md
