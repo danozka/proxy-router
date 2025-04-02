@@ -1,18 +1,18 @@
 import asyncio
-import base64
 import logging
 from asyncio import Server, StreamReader, StreamWriter
 from logging import Logger
 from uuid import uuid4
 
+from proxy_router.i_request_authentication_adder import IRequestAuthenticationAdder
 from proxy_router.request import Request
 from proxy_router.request_adapter import RequestAdapter
 from proxy_router.request_context import request_id_context
+from proxy_router.request_method import RequestMethod
 
 
 class ProxyRouter:
     _log: Logger = logging.getLogger(__name__)
-    _encoded_credentials: str
     _proxy_host: str
     _proxy_port: int
     _host: str
@@ -20,20 +20,19 @@ class ProxyRouter:
     _timeout_seconds: float
     _buffer_size_bytes: int
     _request_adapter: RequestAdapter
+    _request_authentication_adder: IRequestAuthenticationAdder | None
 
     def __init__(
         self,
-        user: str,
-        password: str,
         proxy_host: str,
         proxy_port: int,
         host='127.0.0.1',
         port=8888,
         timeout_seconds: float = 2.0,
         buffer_size_bytes: int = 4096,
-        request_adapter: RequestAdapter = RequestAdapter()
+        request_adapter: RequestAdapter = RequestAdapter(),
+        request_authentication_adder: IRequestAuthenticationAdder | None = None
     ) -> None:
-        self._encoded_credentials = base64.b64encode(f'{user}:{password}'.encode()).decode()
         self._proxy_host = proxy_host
         self._proxy_port = proxy_port
         self._host = host
@@ -41,6 +40,7 @@ class ProxyRouter:
         self._timeout_seconds = timeout_seconds
         self._buffer_size_bytes = buffer_size_bytes
         self._request_adapter = request_adapter
+        self._request_authentication_adder = request_authentication_adder
 
     async def start(self) -> None:
         self._log.info('Starting server...')
@@ -65,12 +65,14 @@ class ProxyRouter:
             )
             if not request:
                 return
-            request.headers['Proxy-Authorization'] = f'Basic {self._encoded_credentials}'
             self._log.info(f'[{request_id_context.get()}] Handling {request}...')
+            if self._request_authentication_adder is not None:
+                self._request_authentication_adder.add_authentication_to_request(request)
             server_reader: StreamReader
             server_writer: StreamWriter
             server_reader, server_writer = await self._open_connection_with_proxy(request)
-            if request.is_https():
+            self._log.debug(f'[{request_id_context.get()}] Tunneling data...')
+            if request.method == RequestMethod.connect:
                 await asyncio.gather(
                     self._tunnel_data(reader=client_reader, writer=server_writer),
                     self._tunnel_data(reader=server_reader, writer=client_writer)
@@ -99,7 +101,6 @@ class ProxyRouter:
         return server_reader, server_writer
 
     async def _tunnel_data(self, reader: StreamReader, writer: StreamWriter) -> None:
-        self._log.debug(f'[{request_id_context.get()}] Tunneling data...')
         while True:
             try:
                 data: bytes = await asyncio.wait_for(
@@ -112,4 +113,3 @@ class ProxyRouter:
                 await writer.drain()
             except TimeoutError:
                 break
-        self._log.debug(f'[{request_id_context.get()}] Tunneling data completed')
