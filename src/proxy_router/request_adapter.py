@@ -38,6 +38,9 @@ class RequestAdapter:
             hostname = parsed_url.hostname
         else:
             hostname = headers['Host']
+        if hostname is not None:
+            if ':' in hostname:
+                hostname = hostname.split(':')[0]
 
         return Request(
             method=RequestMethod(method),
