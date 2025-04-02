@@ -12,15 +12,13 @@ services:
         - pip_trusted_host
     container_name: proxy-router
     environment:
-      - AUTH_USER=${USER}
-      - AUTH_PASSWORD=${PASSWORD}
-      - PROXY_HOST=${PROXY_HOST}
-      - PROXY_PORT=${PROXY_PORT}
-      - HOST=0.0.0.0
-      - PORT=8888
-      - TIMEOUT_SECONDS=2.0
-      - BUFFER_SIZE_BYTES=4096
+      - BASIC_AUTH_USER=${USER}
+      - BASIC_AUTH_PASSWORD=${PASSWORD}
       - LOGGING_LEVEL=INFO
+      - PROXY_ROUTER_BUFFER_SIZE_BYTES=4096
+      - PROXY_ROUTER_HOST=0.0.0.0
+      - PROXY_ROUTER_PORT=8888
+      - PROXY_ROUTER_TIMEOUT_SECONDS=2.0
     image: proxy-router:latest
     ports:
       - "8888:8888"

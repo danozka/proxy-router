@@ -2,7 +2,9 @@ import asyncio
 import logging
 from logging import Logger
 
-from proxy_router import ProxyRouter, RequestBasicAuthenticationAdder
+from authentication import RequestBasicAuthenticationAdder
+from my_company.my_company_proxy_getter import MyCompanyProxyGetter
+from proxy_router import ProxyRouter
 from settings import Settings
 
 
@@ -18,15 +20,14 @@ if __name__ == '__main__':
             level=settings.logging_level
         )
         proxy: ProxyRouter = ProxyRouter(
-            proxy_host=settings.proxy_host,
-            proxy_port=settings.proxy_port,
-            host=settings.host,
-            port=settings.port,
-            timeout_seconds=settings.timeout_seconds,
-            buffer_size_bytes=settings.buffer_size_bytes,
+            proxy_getter=MyCompanyProxyGetter(),
+            host=settings.proxy_router_host,
+            port=settings.proxy_router_port,
+            timeout_seconds=settings.proxy_router_timeout_seconds,
+            buffer_size_bytes=settings.proxy_router_buffer_size_bytes,
             request_authentication_adder=RequestBasicAuthenticationAdder(
-                user=settings.user,
-                password=settings.password
+                user=settings.basic_auth_user,
+                password=settings.basic_auth_password
             )
         )
         asyncio.run(proxy.start())

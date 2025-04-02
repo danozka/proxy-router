@@ -5,7 +5,9 @@ from logging import Logger
 from uuid import uuid4
 
 from proxy_router.empty_request_exception import EmptyRequestException
+from proxy_router.i_proxy_getter import IProxyGetter
 from proxy_router.i_request_authentication_adder import IRequestAuthenticationAdder
+from proxy_router.proxy import Proxy
 from proxy_router.request import Request
 from proxy_router.request_adapter import RequestAdapter
 from proxy_router.request_context import request_id_context
@@ -14,19 +16,18 @@ from proxy_router.request_method import RequestMethod
 
 class ProxyRouter:
     _log: Logger = logging.getLogger(__name__)
-    _proxy_host: str
-    _proxy_port: int
+    _proxy_getter: IProxyGetter
     _host: str
     _port: int
     _timeout_seconds: float
     _buffer_size_bytes: int
     _request_adapter: RequestAdapter
     _request_authentication_adder: IRequestAuthenticationAdder | None
+    _proxy_getter: IProxyGetter
 
     def __init__(
         self,
-        proxy_host: str,
-        proxy_port: int,
+        proxy_getter: IProxyGetter,
         host='127.0.0.1',
         port=8888,
         timeout_seconds: float = 2.0,
@@ -34,8 +35,7 @@ class ProxyRouter:
         request_adapter: RequestAdapter = RequestAdapter(),
         request_authentication_adder: IRequestAuthenticationAdder | None = None
     ) -> None:
-        self._proxy_host = proxy_host
-        self._proxy_port = proxy_port
+        self._proxy_getter = proxy_getter
         self._host = host
         self._port = port
         self._timeout_seconds = timeout_seconds
@@ -71,7 +71,8 @@ class ProxyRouter:
             self._log.info(f'[{request_id_context.get()}] Handling {request}...')
             if self._request_authentication_adder is not None:
                 self._request_authentication_adder.add_authentication_to_request(request)
-            server_reader, server_writer = await self._establish_connection_with_proxy(request)
+            proxy: Proxy = self._proxy_getter.get_proxy(request)
+            server_reader, server_writer = await self._establish_connection_with_proxy(proxy=proxy, request=request)
             if request.method == RequestMethod.connect:
                 await asyncio.gather(
                     self._tunnel_data(
@@ -104,18 +105,18 @@ class ProxyRouter:
                 server_writer.close()
                 await server_writer.wait_closed()
 
-    async def _establish_connection_with_proxy(self, request: Request) -> tuple[StreamReader, StreamWriter]:
-        self._log.debug(
-            f'[{request_id_context.get()}] Establishing connection with \'{self._proxy_host}:{self._proxy_port}\'...'
-        )
+    async def _establish_connection_with_proxy(
+        self,
+        proxy: Proxy,
+        request: Request
+    ) -> tuple[StreamReader, StreamWriter]:
+        self._log.debug(f'[{request_id_context.get()}] Establishing connection with {proxy}...')
         server_reader: StreamReader
         server_writer: StreamWriter
-        server_reader, server_writer = await asyncio.open_connection(host=self._proxy_host, port=self._proxy_port)
+        server_reader, server_writer = await asyncio.open_connection(host=proxy.host, port=proxy.port)
         server_writer.write(self._request_adapter.adapt_request_to_bytes(request))
         await server_writer.drain()
-        self._log.debug(
-            f'[{request_id_context.get()}] Connection with \'{self._proxy_host}:{self._proxy_port}\' established'
-        )
+        self._log.debug(f'[{request_id_context.get()}] Connection with {proxy} established')
         return server_reader, server_writer
 
     async def _tunnel_data(self, source: str, destination: str, reader: StreamReader, writer: StreamWriter) -> None:

@@ -2,9 +2,7 @@ import base64
 import logging
 from logging import Logger
 
-from proxy_router.i_request_authentication_adder import IRequestAuthenticationAdder
-from proxy_router.request import Request
-from proxy_router.request_context import request_id_context
+from proxy_router import IRequestAuthenticationAdder, Request, request_id_context
 
 
 class RequestBasicAuthenticationAdder(IRequestAuthenticationAdder):
