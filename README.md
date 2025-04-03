@@ -17,4 +17,4 @@ A lightweight Python proxy server that:
 - Scripts / automation that rely on authenticated proxies.
 - Teams enforcing frequent password rotations without the hassle.
 
-<img width="700px" src="./images/workflow.png"></img>
+<img width="100%" src="./images/workflow.png"></img>
