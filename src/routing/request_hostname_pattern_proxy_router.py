@@ -6,7 +6,7 @@ from pathlib import Path
 from aiopath import AsyncPath
 from pydantic import TypeAdapter
 
-from proxy_server import IProxyRouter, Request, request_id_context
+from proxy_server import IProxyRouter, Request
 from proxy_server.proxy import Proxy
 from routing.proxy_match_not_found_exception import ProxyMatchNotFoundException
 from routing.request_hostname_pattern_proxy_routing import RequestHostnamePatternProxyRouting
@@ -29,7 +29,7 @@ class RequestHostnamePatternProxyRouter(IProxyRouter):
         self._buffer_size_bytes = buffer_size_bytes
 
     async def route_request_to_proxy(self, request: Request) -> Proxy:
-        self._log.debug(f'[{request_id_context.get()}] Getting proxy for hostname \'{request.hostname}\'...')
+        self._log.debug(f'Getting proxy for hostname \'{request.hostname}\'...')
         async with self._routing_config_file_path.open(mode='r') as file:
             routing_list: list[RequestHostnamePatternProxyRouting] = TypeAdapter(
                 list[RequestHostnamePatternProxyRouting]
@@ -43,6 +43,6 @@ class RequestHostnamePatternProxyRouter(IProxyRouter):
                     timeout_seconds=self._timeout_seconds,
                     buffer_size_bytes=self._buffer_size_bytes
                 )
-                self._log.debug(f'[{request_id_context.get()}] Proxy for hostname \'{request.hostname}\' retrieved')
+                self._log.debug(f'Proxy for hostname \'{request.hostname}\' retrieved')
                 return result
         raise ProxyMatchNotFoundException(request.hostname)

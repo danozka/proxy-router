@@ -3,6 +3,7 @@ import logging
 from logging import Logger
 
 from authentication import RequestBasicAuthenticationAdder
+from proxy_logging import ProxyLoggingBuilder
 from proxy_server import ProxyServer
 from routing import RequestHostnamePatternProxyRouter
 from settings import Settings
@@ -14,11 +15,8 @@ log: Logger = logging.getLogger(__name__)
 if __name__ == '__main__':
     try:
         settings: Settings = Settings()
-        logging.basicConfig(
-            format='%(asctime)s.%(msecs)03d - [%(levelname)s] - %(message)s',
-            datefmt='%d-%m-%Y %H:%M:%S',
-            level=settings.logging_level
-        )
+        proxy_logging_builder: ProxyLoggingBuilder = ProxyLoggingBuilder(settings.logging_level)
+        proxy_logging_builder.build()
         proxy_server: ProxyServer = ProxyServer(
             proxy_router=RequestHostnamePatternProxyRouter(
                 routing_config_file_path=settings.proxy_routing_config_file_path,

@@ -59,7 +59,7 @@ class ProxyServer:
         client: Client | None = None
         proxy: Proxy | None = None
         request_id_context.set(uuid4())
-        self._log.info(f'[{request_id_context.get()}] Handling new request...')
+        self._log.info('Handling new request...')
         try:
             client: Client = Client(
                 reader=client_reader,
@@ -70,7 +70,7 @@ class ProxyServer:
             request: Request | None = self._request_adapter.adapt_request_from_bytes(await client.read())
             if not request:
                 raise EmptyRequestException
-            self._log.info(f'[{request_id_context.get()}] Handling {request}...')
+            self._log.info(f'Handling {request}...')
             if self._request_authentication_adder is not None:
                 self._request_authentication_adder.add_authentication_to_request(request)
             proxy: Proxy = await self._proxy_router.route_request_to_proxy(request)
@@ -83,9 +83,9 @@ class ProxyServer:
                 )
             else:
                 await self._tunnel_data(source=proxy, destination=client)
-            self._log.info(f'[{request_id_context.get()}] Request handled successfully')
+            self._log.info('Request handled successfully')
         except Exception as ex:
-            self._log.error(f'[{request_id_context.get()}] Error handling request: {ex.__class__.__name__} - {ex}')
+            self._log.error(f'Error handling request: {ex.__class__.__name__} - {ex}')
         finally:
             if client is not None:
                 await client.close()
@@ -93,10 +93,10 @@ class ProxyServer:
                 await proxy.close()
 
     async def _tunnel_data(self, source: Connection, destination: Connection) -> None:
-        self._log.debug(f'[{request_id_context.get()}] Tunneling data from {source} to {destination}...')
+        self._log.debug(f'Tunneling data from {source} to {destination}...')
         while True:
             data: bytes = await source.read()
             if not data:
                 break
             await destination.write(data)
-        self._log.debug(f'[{request_id_context.get()}] Tunneling data from {source} to {destination} completed')
+        self._log.debug(f'Tunneling data from {source} to {destination} completed')
