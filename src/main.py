@@ -3,8 +3,8 @@ import logging
 from logging import Logger
 
 from authentication import RequestBasicAuthenticationAdder
-from proxy_router import RequestHostnamePatternProxyRouter
 from proxy_server import ProxyServer
+from routing import RequestHostnamePatternProxyRouter
 from settings import Settings
 
 

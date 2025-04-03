@@ -6,10 +6,10 @@ from pathlib import Path
 from aiopath import AsyncPath
 from pydantic import TypeAdapter
 
-from proxy_router.proxy_match_not_found_exception import ProxyMatchNotFoundException
-from proxy_router.request_hostname_pattern_proxy_routing import RequestHostnamePatternProxyRouting
 from proxy_server import IProxyRouter, Request, request_id_context
 from proxy_server.proxy import Proxy
+from routing.proxy_match_not_found_exception import ProxyMatchNotFoundException
+from routing.request_hostname_pattern_proxy_routing import RequestHostnamePatternProxyRouting
 
 
 class RequestHostnamePatternProxyRouter(IProxyRouter):
