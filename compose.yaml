@@ -2,14 +2,9 @@ services:
   proxy-router:
     build:
       args:
-        - DOCKER_REGISTRY_MIRROR=${DOCKER_REGISTRY_MIRROR}
         - PYTHON_VERSION=3.11
       context: .
       dockerfile: ./Dockerfile
-      secrets:
-        - pip_index_url
-        - pip_proxy
-        - pip_trusted_host
     container_name: proxy-router
     environment:
       - BASIC_AUTH_USER=${AUTH_USER}
@@ -26,10 +21,3 @@ services:
     restart: unless-stopped
     volumes:
       - ./secrets/routing.json:/app/routing.json  # Modify this with your routing rules
-secrets:
-  pip_index_url:
-    environment: PIP_INDEX_URL
-  pip_proxy:
-    environment: PIP_PROXY
-  pip_trusted_host:
-    environment: PIP_TRUSTED_HOST
