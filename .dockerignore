@@ -4,6 +4,7 @@
 .idea/
 .run/
 .venv/
+secrets/
 .dockerignore
 .env
 .gitignore

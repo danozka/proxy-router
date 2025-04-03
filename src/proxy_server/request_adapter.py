@@ -1,7 +1,5 @@
-from urllib.parse import ParseResult, urlparse
-
-from proxy_router.request import Request
-from proxy_router.request_method import RequestMethod
+from proxy_server.request import Request
+from proxy_server.request_method import RequestMethod
 
 
 class RequestAdapter:
@@ -13,7 +11,7 @@ class RequestAdapter:
         lines: list[str] = request.decode().splitlines()
         start_line: list[str] = lines[0].split()
         method: str = start_line[0]
-        path: str = start_line[1]
+        target: str = start_line[1]
         http_version: str = start_line[2]
 
         headers: dict[str, str] = {}
@@ -32,19 +30,18 @@ class RequestAdapter:
             else:
                 body = line if body is None else body + line + '\n'
 
-        hostname: str | None
-        if 'Host' not in headers:
-            parsed_url: ParseResult = urlparse(path)
-            hostname = parsed_url.hostname
+        address: str
+        if 'Host' in headers:
+            address = headers['Host']
         else:
-            hostname = headers['Host']
-        if hostname is not None:
-            if ':' in hostname:
-                hostname = hostname.split(':')[0]
+            target_without_scheme: str = target.split(sep='//')[-1]
+            address = target_without_scheme.split(sep='/')[0]
+
+        hostname: str = address.split(sep=':')[0] if ':' in address else address
 
         return Request(
             method=RequestMethod(method),
-            path=path,
+            target=target,
             http_version=http_version,
             headers=headers,
             body=body,
@@ -53,7 +50,7 @@ class RequestAdapter:
 
     @staticmethod
     def adapt_request_to_bytes(request: Request) -> bytes:
-        request_string: str = f'{request.method.value} {request.path} {request.http_version}\r\n'
+        request_string: str = f'{request.method.value} {request.target} {request.http_version}\r\n'
         request_string += '\r\n'.join([f'{key}: {value}' for key, value in request.headers.items()]) + '\r\n\r\n'
         if request.body is not None:
             request_string += request.body

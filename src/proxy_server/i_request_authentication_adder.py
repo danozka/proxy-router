@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from proxy_router.request import Request
+from proxy_server.request import Request
 
 
 class IRequestAuthenticationAdder(ABC):

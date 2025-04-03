@@ -1,7 +1,7 @@
 ARG DOCKER_REGISTRY_MIRROR
 ARG PYTHON_VERSION
 
-FROM ${DOCKER_REGISTRY_MIRROR}/python:${PYTHON_VERSION}-alpine AS builder
+FROM ${DOCKER_REGISTRY_MIRROR}/python:${PYTHON_VERSION}-slim AS builder
 ENV PATH="/opt/venv/bin:$PATH"
 COPY ./requirements.txt .
 RUN --mount=type=secret,id=pip_index_url \
@@ -13,7 +13,7 @@ RUN --mount=type=secret,id=pip_index_url \
     python3 -m venv /opt/venv && \
     pip3 install --no-cache-dir -r ./requirements.txt
 
-FROM ${DOCKER_REGISTRY_MIRROR}/python:${PYTHON_VERSION}-alpine AS app
+FROM ${DOCKER_REGISTRY_MIRROR}/python:${PYTHON_VERSION}-slim AS app
 WORKDIR /app
 ENV PATH="/opt/venv/bin:$PATH"
 COPY --from=builder /opt/venv /opt/venv

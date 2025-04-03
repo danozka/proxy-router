@@ -12,17 +12,20 @@ services:
         - pip_trusted_host
     container_name: proxy-router
     environment:
-      - BASIC_AUTH_USER=${USER}
-      - BASIC_AUTH_PASSWORD=${PASSWORD}
+      - BASIC_AUTH_USER=${AUTH_USER}
+      - BASIC_AUTH_PASSWORD=${AUTH_PASSWORD}
       - LOGGING_LEVEL=INFO
-      - PROXY_ROUTER_BUFFER_SIZE_BYTES=4096
-      - PROXY_ROUTER_HOST=0.0.0.0
-      - PROXY_ROUTER_PORT=8888
-      - PROXY_ROUTER_TIMEOUT_SECONDS=2.0
+      - PROXY_ROUTING_CONFIG_FILE_PATH=/app/routing.json
+      - PROXY_SERVER_BUFFER_SIZE_BYTES=4096
+      - PROXY_SERVER_HOST=0.0.0.0
+      - PROXY_SERVER_PORT=8888
+      - PROXY_SERVER_TIMEOUT_SECONDS=2.0
     image: proxy-router:latest
     ports:
       - "8888:8888"
     restart: unless-stopped
+    volumes:
+      - ./secrets/routing.json:/app/routing.json  # Modify this with your routing rules
 secrets:
   pip_index_url:
     environment: PIP_INDEX_URL

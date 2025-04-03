@@ -2,7 +2,7 @@ import base64
 import logging
 from logging import Logger
 
-from proxy_router import IRequestAuthenticationAdder, Request, request_id_context
+from proxy_server import IRequestAuthenticationAdder, Request, request_id_context
 
 
 class RequestBasicAuthenticationAdder(IRequestAuthenticationAdder):
@@ -15,3 +15,4 @@ class RequestBasicAuthenticationAdder(IRequestAuthenticationAdder):
     def add_authentication_to_request(self, request: Request) -> None:
         self._log.debug(f'[{request_id_context.get()}] Adding basic authentication headers...')
         request.headers['Proxy-Authorization'] = f'Basic {self._encoded_credentials}'
+        self._log.debug(f'[{request_id_context.get()}] Basic authentication headers added')

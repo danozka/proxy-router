@@ -3,8 +3,8 @@ import logging
 from logging import Logger
 
 from authentication import RequestBasicAuthenticationAdder
-from my_company.my_company_proxy_getter import MyCompanyProxyGetter
-from proxy_router import ProxyRouter
+from proxy_router import RequestHostnamePatternProxyRouter
+from proxy_server import ProxyServer
 from settings import Settings
 
 
@@ -19,20 +19,20 @@ if __name__ == '__main__':
             datefmt='%d-%m-%Y %H:%M:%S',
             level=settings.logging_level
         )
-        proxy: ProxyRouter = ProxyRouter(
-            proxy_getter=MyCompanyProxyGetter(),
-            host=settings.proxy_router_host,
-            port=settings.proxy_router_port,
-            timeout_seconds=settings.proxy_router_timeout_seconds,
-            buffer_size_bytes=settings.proxy_router_buffer_size_bytes,
+        proxy_server: ProxyServer = ProxyServer(
+            proxy_router=RequestHostnamePatternProxyRouter(settings.proxy_routing_config_file_path),
+            host=settings.proxy_server_host,
+            port=settings.proxy_server_port,
+            timeout_seconds=settings.proxy_server_timeout_seconds,
+            buffer_size_bytes=settings.proxy_server_buffer_size_bytes,
             request_authentication_adder=RequestBasicAuthenticationAdder(
                 user=settings.basic_auth_user,
                 password=settings.basic_auth_password
             )
         )
-        asyncio.run(proxy.start())
+        asyncio.run(proxy_server.start())
     except Exception as ex:
-        log.error(f'Exception found while starting application: {ex.__class__.__name__}')
+        log.error(f'Exception found while starting application: {ex.__class__.__name__} - {ex}')
     finally:
         log.info('Application stopped')
         logging.shutdown()

@@ -4,38 +4,37 @@ from asyncio import Server, StreamReader, StreamWriter
 from logging import Logger
 from uuid import uuid4
 
-from proxy_router.empty_request_exception import EmptyRequestException
-from proxy_router.i_proxy_getter import IProxyGetter
-from proxy_router.i_request_authentication_adder import IRequestAuthenticationAdder
-from proxy_router.proxy import Proxy
-from proxy_router.request import Request
-from proxy_router.request_adapter import RequestAdapter
-from proxy_router.request_context import request_id_context
-from proxy_router.request_method import RequestMethod
+from proxy_server.empty_request_exception import EmptyRequestException
+from proxy_server.i_proxy_router import IProxyRouter
+from proxy_server.i_request_authentication_adder import IRequestAuthenticationAdder
+from proxy_server.proxy import Proxy
+from proxy_server.request import Request
+from proxy_server.request_adapter import RequestAdapter
+from proxy_server.request_context import request_id_context
+from proxy_server.request_method import RequestMethod
 
 
-class ProxyRouter:
+class ProxyServer:
     _log: Logger = logging.getLogger(__name__)
-    _proxy_getter: IProxyGetter
+    _proxy_router: IProxyRouter
     _host: str
     _port: int
     _timeout_seconds: float
     _buffer_size_bytes: int
     _request_adapter: RequestAdapter
     _request_authentication_adder: IRequestAuthenticationAdder | None
-    _proxy_getter: IProxyGetter
 
     def __init__(
         self,
-        proxy_getter: IProxyGetter,
-        host='127.0.0.1',
+        proxy_router: IProxyRouter,
+        host='0.0.0.0',
         port=8888,
         timeout_seconds: float = 2.0,
         buffer_size_bytes: int = 4096,
         request_adapter: RequestAdapter = RequestAdapter(),
         request_authentication_adder: IRequestAuthenticationAdder | None = None
     ) -> None:
-        self._proxy_getter = proxy_getter
+        self._proxy_router = proxy_router
         self._host = host
         self._port = port
         self._timeout_seconds = timeout_seconds
@@ -71,7 +70,7 @@ class ProxyRouter:
             self._log.info(f'[{request_id_context.get()}] Handling {request}...')
             if self._request_authentication_adder is not None:
                 self._request_authentication_adder.add_authentication_to_request(request)
-            proxy: Proxy = self._proxy_getter.get_proxy(request)
+            proxy: Proxy = await self._proxy_router.route_request_to_proxy(request)
             server_reader, server_writer = await self._establish_connection_with_proxy(proxy=proxy, request=request)
             if request.method == RequestMethod.connect:
                 await asyncio.gather(
