@@ -4,7 +4,7 @@ from proxy_server.request_method import RequestMethod
 
 class RequestAdapter:
     @staticmethod
-    def adapt_request_from_bytes(request: bytes) -> Request | None:
+    def adapt_request_from_bytes(request: bytes | None) -> Request | None:
         if not request:
             return None
 

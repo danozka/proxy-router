@@ -20,7 +20,11 @@ if __name__ == '__main__':
             level=settings.logging_level
         )
         proxy_server: ProxyServer = ProxyServer(
-            proxy_router=RequestHostnamePatternProxyRouter(settings.proxy_routing_config_file_path),
+            proxy_router=RequestHostnamePatternProxyRouter(
+                routing_config_file_path=settings.proxy_routing_config_file_path,
+                timeout_seconds=settings.proxy_server_timeout_seconds,
+                buffer_size_bytes=settings.proxy_server_buffer_size_bytes
+            ),
             host=settings.proxy_server_host,
             port=settings.proxy_server_port,
             timeout_seconds=settings.proxy_server_timeout_seconds,

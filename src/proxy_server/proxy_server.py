@@ -4,6 +4,8 @@ from asyncio import Server, StreamReader, StreamWriter
 from logging import Logger
 from uuid import uuid4
 
+from proxy_server.client import Client
+from proxy_server.connection import Connection
 from proxy_server.empty_request_exception import EmptyRequestException
 from proxy_server.i_proxy_router import IProxyRouter
 from proxy_server.i_request_authentication_adder import IRequestAuthenticationAdder
@@ -54,82 +56,47 @@ class ProxyServer:
             await server.serve_forever()
 
     async def _handle_request(self, client_reader: StreamReader, client_writer: StreamWriter) -> None:
+        client: Client | None = None
+        proxy: Proxy | None = None
         request_id_context.set(uuid4())
-        server_reader: StreamReader
-        server_writer: StreamWriter | None = None
         self._log.info(f'[{request_id_context.get()}] Handling new request...')
         try:
-            request: Request | None = self._request_adapter.adapt_request_from_bytes(
-                await asyncio.wait_for(
-                    fut=client_reader.read(self._buffer_size_bytes),
-                    timeout=self._timeout_seconds
-                )
+            client: Client = Client(
+                reader=client_reader,
+                writer=client_writer,
+                timeout_seconds=self._timeout_seconds,
+                buffer_size_bytes=self._buffer_size_bytes
             )
+            request: Request | None = self._request_adapter.adapt_request_from_bytes(await client.read())
             if not request:
                 raise EmptyRequestException
             self._log.info(f'[{request_id_context.get()}] Handling {request}...')
             if self._request_authentication_adder is not None:
                 self._request_authentication_adder.add_authentication_to_request(request)
             proxy: Proxy = await self._proxy_router.route_request_to_proxy(request)
-            server_reader, server_writer = await self._establish_connection_with_proxy(proxy=proxy, request=request)
+            await proxy.connect()
+            await proxy.write(self._request_adapter.adapt_request_to_bytes(request))
             if request.method == RequestMethod.connect:
                 await asyncio.gather(
-                    self._tunnel_data(
-                        source='client',
-                        destination='proxy',
-                        reader=client_reader,
-                        writer=server_writer
-                    ),
-                    self._tunnel_data(
-                        source='proxy',
-                        destination='client',
-                        reader=server_reader,
-                        writer=client_writer
-                    )
+                    self._tunnel_data(source=client, destination=proxy),
+                    self._tunnel_data(source=proxy, destination=client)
                 )
             else:
-                await self._tunnel_data(
-                    source='proxy',
-                    destination='client',
-                    reader=server_reader,
-                    writer=client_writer
-                )
+                await self._tunnel_data(source=proxy, destination=client)
             self._log.info(f'[{request_id_context.get()}] Request handled successfully')
         except Exception as ex:
             self._log.error(f'[{request_id_context.get()}] Error handling request: {ex.__class__.__name__} - {ex}')
         finally:
-            client_writer.close()
-            await client_writer.wait_closed()
-            if server_writer is not None:
-                server_writer.close()
-                await server_writer.wait_closed()
+            if client is not None:
+                await client.close()
+            if proxy is not None:
+                await proxy.close()
 
-    async def _establish_connection_with_proxy(
-        self,
-        proxy: Proxy,
-        request: Request
-    ) -> tuple[StreamReader, StreamWriter]:
-        self._log.debug(f'[{request_id_context.get()}] Establishing connection with {proxy}...')
-        server_reader: StreamReader
-        server_writer: StreamWriter
-        server_reader, server_writer = await asyncio.open_connection(host=proxy.host, port=proxy.port)
-        server_writer.write(self._request_adapter.adapt_request_to_bytes(request))
-        await server_writer.drain()
-        self._log.debug(f'[{request_id_context.get()}] Connection with {proxy} established')
-        return server_reader, server_writer
-
-    async def _tunnel_data(self, source: str, destination: str, reader: StreamReader, writer: StreamWriter) -> None:
+    async def _tunnel_data(self, source: Connection, destination: Connection) -> None:
         self._log.debug(f'[{request_id_context.get()}] Tunneling data from {source} to {destination}...')
         while True:
-            try:
-                data: bytes = await asyncio.wait_for(
-                    fut=reader.read(self._buffer_size_bytes),
-                    timeout=self._timeout_seconds
-                )
-                if not data:
-                    break
-                writer.write(data)
-                await writer.drain()
-            except TimeoutError:
+            data: bytes = await source.read()
+            if not data:
                 break
+            await destination.write(data)
         self._log.debug(f'[{request_id_context.get()}] Tunneling data from {source} to {destination} completed')
