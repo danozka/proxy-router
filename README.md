@@ -13,6 +13,8 @@ A lightweight Python proxy server that:
 3. **Simplifies maintenance** - Change passwords once in the config; no more hunting down proxy settings across tools.
 
 ### Use cases:
-- Developers tired of reconfiguring proxies in every IDE/CLI tool.
-- Scripts/automation that rely on authenticated proxies.
+- Developers tired of reconfiguring proxies in every IDE / CLI tool.
+- Scripts / automation that rely on authenticated proxies.
 - Teams enforcing frequent password rotations without the hassle.
+
+<img width="700px" src="./images/workflow.png"></img>
