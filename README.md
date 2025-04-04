@@ -11,8 +11,8 @@
   * [Docker Compose (recommended)](#docker-compose-recommended)
   * [Docker CLI](#docker-cli)
 * [Environment variables](#environment-variables)
-* [Configure tools to use the proxy](#configure-tools-to-use-the-proxy-)
-* [Updating credentials](#updating-credentials-)
+* [Configure tools to use the proxy](#configure-tools-to-use-the-proxy)
+* [Updating credentials](#updating-credentials)
 
 ## What is proxy-router?
 A lightweight HTTP proxy server that automatically routes requests to the appropriate proxy based on hostname patterns, 
@@ -138,7 +138,7 @@ docker run -d \
 |       `PROXY_SERVER_PORT`        |       8888        | Port that the proxy will listen to                    |
 |  `PROXY_SERVER_TIMEOUT_SECONDS`  |        2.0        | Time in seconds to shutdown unused connections        |
 
-## Configure tools to use the proxy  
+## Configure tools to use the proxy
 Set your tools to use the proxy address, by default `http://localhost:8888`. 
 For example:  
 - **git**:  
@@ -154,7 +154,7 @@ For example:
   export http_proxy=http://localhost:8888
   ```  
 
-## Updating credentials  
+## Updating credentials
 Just change the passwords in [auth.json](./resources/auth.json) configuration file. 
 
 No need to update individual tools!  
