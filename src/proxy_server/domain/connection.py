@@ -24,12 +24,18 @@ class Connection:
         if self._writer is None:
             raise NotImplementedError('No writer was found')
         else:
-            self._writer.write(data)
-            await self._writer.drain()
+            try:
+                self._writer.write(data)
+                await self._writer.drain()
+            except ConnectionError:
+                pass
 
     async def close(self) -> None:
         if self._writer is None:
             raise NotImplementedError('No writer was found')
         else:
-            self._writer.close()
-            await self._writer.wait_closed()
+            try:
+                self._writer.close()
+                await self._writer.wait_closed()
+            except ConnectionError:
+                pass

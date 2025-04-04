@@ -116,4 +116,4 @@ class ProxyServer:
             if not data:
                 break
             await destination.write(data)
-        self._log.debug(f'Tunneling data from {source} to {destination} completed')
+        self._log.debug(f'Tunneling data from {source} to {destination} finished')
