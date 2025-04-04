@@ -18,19 +18,13 @@ if __name__ == '__main__':
         proxy_logging_builder: ProxyLoggingBuilder = ProxyLoggingBuilder(settings.logging_level)
         proxy_logging_builder.build()
         proxy_server: ProxyServer = ProxyServer(
-            proxy_router=RequestHostnamePatternProxyRouter(
-                routing_config_file_path=settings.proxy_routing_config_file_path,
-                timeout_seconds=settings.proxy_server_timeout_seconds,
-                buffer_size_bytes=settings.proxy_server_buffer_size_bytes
-            ),
+            proxy_config_file_path=settings.proxy_config_file_path,
+            proxy_router=RequestHostnamePatternProxyRouter(settings.routing_config_file_path),
             host=settings.proxy_server_host,
             port=settings.proxy_server_port,
             timeout_seconds=settings.proxy_server_timeout_seconds,
             buffer_size_bytes=settings.proxy_server_buffer_size_bytes,
-            request_authentication_adder=RequestBasicAuthenticationAdder(
-                user=settings.basic_auth_user,
-                password=settings.basic_auth_password
-            )
+            request_authentication_adder=RequestBasicAuthenticationAdder(settings.authentication_config_file_path)
         )
         asyncio.run(proxy_server.start())
     except Exception as ex:

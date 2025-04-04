@@ -1,0 +1,20 @@
+[
+  {
+    "id": "company-proxy",
+    "hostname": "pxy-company.my-company-domain.com",
+    "port": 3128,
+    "authId": "company-user"
+  },
+  {
+    "id": "external-proxy",
+    "hostname": "pxy-external.my-company-domain.com",
+    "port": 3128,
+    "authId": "company-user"
+  },
+  {
+    "id": "internet-proxy",
+    "hostname": "pxy-internet.my-company-domain.com",
+    "port": 3128,
+    "authId": "internet-user"
+  }
+]

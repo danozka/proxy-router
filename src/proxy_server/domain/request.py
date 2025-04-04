@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from proxy_server.request_method import RequestMethod
+from proxy_server.domain.request_method import RequestMethod
 
 
 @dataclass

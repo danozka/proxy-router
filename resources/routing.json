@@ -1,17 +1,14 @@
 [
   {
     "requestHostnamePattern": "*.my-company-domain.com",
-    "proxyHost": "pxy-company.my-company-domain.com",
-    "proxyPort": 3128
+    "proxyId": "company-proxy"
   },
   {
     "requestHostnamePattern": "*.external-domain.com",
-    "proxyHost": "pxy-external.my-company-domain.com",
-    "proxyPort": 3128
+    "proxyId": "external-proxy"
   },
   {
-    "requestHostnamePattern": "*",
-    "proxyHost": "pxy-internet.my-company-domain.com",
-    "proxyPort": 3128
+    "requestHostnamePattern": "pxy-internet.my-company-domain.com",
+    "proxyId": "internet-proxy"
   }
 ]

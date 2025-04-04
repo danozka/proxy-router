@@ -1,5 +1,5 @@
-from proxy_server.request import Request
-from proxy_server.request_method import RequestMethod
+from proxy_server.domain.request import Request
+from proxy_server.domain.request_method import RequestMethod
 
 
 class RequestAdapter:

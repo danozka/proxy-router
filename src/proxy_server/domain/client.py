@@ -1,6 +1,6 @@
 from asyncio import StreamReader, StreamWriter
 
-from proxy_server.connection import Connection
+from proxy_server.domain.connection import Connection
 
 
 class Client(Connection):
@@ -13,7 +13,8 @@ class Client(Connection):
     ) -> None:
         self._reader = reader
         self._writer = writer
-        super().__init__(timeout_seconds=timeout_seconds, buffer_size_bytes=buffer_size_bytes)
+        self._timeout_seconds = timeout_seconds
+        self._buffer_size_bytes = buffer_size_bytes
 
     def __str__(self) -> str:
         return self.__class__.__name__
