@@ -13,6 +13,8 @@
 * [Environment variables](#environment-variables)
 * [Configure tools to use the proxy](#configure-tools-to-use-the-proxy)
 * [Updating credentials](#updating-credentials)
+* [Contributing](#contributing)
+* [License](#license)
 
 ## What is proxy-router?
 A lightweight HTTP proxy server that automatically routes requests to the appropriate proxy based on hostname patterns, 
@@ -158,3 +160,9 @@ For example:
 Just change the passwords in [auth.json](./resources/auth.json) configuration file. 
 
 No need to update individual tools!  
+
+## Contributing
+Pull requests are welcome. For major changes, open an issue first.
+
+## License
+[MIT](./LICENSE)
