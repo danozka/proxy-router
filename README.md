@@ -1,4 +1,19 @@
 # <img width="24px" src="./images/logo.png"></img> proxy-router 
+
+* [What is proxy-router?](#what-is-proxy-router)
+* [Why use this?](#why-use-this)
+* [How it works](#how-it-works)
+* [Configuration](#configuration)
+  * [Authentication](#authentication)
+  * [Proxies](#proxies)
+  * [Routing](#routing)
+* [Running the proxy](#running-the-proxy)
+  * [Docker Compose (recommended)](#docker-compose-recommended)
+  * [Docker CLI](#docker-cli)
+* [Environment variables](#environment-variables)
+* [Configure tools to use the proxy](#configure-tools-to-use-the-proxy-)
+* [Updating credentials](#updating-credentials-)
+
 ## What is proxy-router?
 A lightweight HTTP proxy server that automatically routes requests to the appropriate proxy based on hostname patterns, 
 handling authentication headers dynamically.
