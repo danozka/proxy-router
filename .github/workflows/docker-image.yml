@@ -23,5 +23,5 @@ jobs:
         context: .
         push: true
         tags: |
-          your-dockerhub-username/your-repo-name:latest
-          your-dockerhub-username/your-repo-name:${{ github.sha }}
+          danozka/proxy-router:latest
+          danozka/proxy-router:${{ github.sha }}
