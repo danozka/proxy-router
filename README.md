@@ -107,7 +107,7 @@ file.
 services:
   proxy-router:
     container_name: proxy-router
-    image: proxy-router
+    image: danozka/proxy-router
     ports:
       - "8888:8888"
     restart: unless-stopped
@@ -126,7 +126,7 @@ docker run -d \
   -v ./secrets/auth.json:/app/auth.json \        # Update path with your auth config
   -v ./secrets/routing.json:/app/routing.json \  # Update path with your routing config
   -v ./secrets/proxy.json:/app/proxy.json \      # Update path with your proxy config
-  proxy-router
+  danozka/proxy-router
 ```
 
 ## Environment variables
