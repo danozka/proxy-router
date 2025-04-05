@@ -56,7 +56,7 @@ Edit [auth.json](./resources/auth.json) to define your different authentication 
 
 ### Proxies
 Edit [proxy.json](./resources/proxy.json) to define your list of proxies. The `authenticationId` property of each proxy 
-has to point to an existing authentication method in [auth.json](./resources/auth.json) file.
+has to point to an existing authentication method in your [auth.json](./resources/auth.json) file.
 ```json
 [
   {
@@ -82,7 +82,8 @@ has to point to an existing authentication method in [auth.json](./resources/aut
 
 ### Routing
 Edit [routing.json](./resources/routing.json) to define your request hostname patterns and the proxies to point to. The 
-`proxyId` field of each routing rule has to point to an existing proxy in [proxy.json](./resources/proxy.json) file.
+`proxyId` field of each routing rule has to point to an existing proxy in your [proxy.json](./resources/proxy.json) 
+file.
 ```json
 [
   {
@@ -111,9 +112,9 @@ services:
       - "8888:8888"
     restart: unless-stopped
     volumes:
-      - ./secrets/auth.json:/app/auth.json
-      - ./secrets/routing.json:/app/routing.json
-      - ./secrets/proxy.json:/app/proxy.json
+      - ./secrets/auth.json:/app/auth.json        # Update path with your auth config
+      - ./secrets/routing.json:/app/routing.json  # Update path with your routing config
+      - ./secrets/proxy.json:/app/proxy.json      # Update path with your proxy config
 ```
 
 ### Docker CLI
@@ -122,9 +123,9 @@ docker run -d \
   --name proxy-router \
   -p 8888:8888 \
   --restart=unless-stopped \
-  -v ./secrets/auth.json:/app/auth.json \
-  -v ./secrets/routing.json:/app/routing.json \
-  -v ./secrets/proxy.json:/app/proxy.json \
+  -v ./secrets/auth.json:/app/auth.json \        # Update path with your auth config
+  -v ./secrets/routing.json:/app/routing.json \  # Update path with your routing config
+  -v ./secrets/proxy.json:/app/proxy.json \      # Update path with your proxy config
   proxy-router
 ```
 
@@ -157,7 +158,7 @@ For example:
   ```  
 
 ## Updating credentials
-Just change the passwords in [auth.json](./resources/auth.json) configuration file. 
+Just change the passwords in your [auth.json](./resources/auth.json) configuration file. 
 
 No need to update individual tools!  
 
