@@ -28,7 +28,7 @@ class RequestAdapter:
                     key, value = line.split(sep=':', maxsplit=1)
                     headers[key.strip()] = value.strip()
             else:
-                body = line if body is None else body + line + '\n'
+                body = line if body is None else body + '\n' + line
 
         address: str
         if 'Host' in headers:
@@ -50,8 +50,10 @@ class RequestAdapter:
 
     @staticmethod
     def adapt_request_to_bytes(request: Request) -> bytes:
-        request_string: str = f'{request.method.value} {request.target} {request.http_version}\r\n'
-        request_string += '\r\n'.join([f'{key}: {value}' for key, value in request.headers.items()]) + '\r\n\r\n'
+        start_line_string: str = f'{request.method.value} {request.target} {request.http_version}\r\n'
+        headers_string: str = '\r\n'.join([f'{key}: {value}' for key, value in request.headers.items()])
+        headers_string += '\r\n' if headers_string else ''
+        request_string: str = start_line_string + headers_string + '\r\n'
         if request.body is not None:
             request_string += request.body
         return request_string.encode()

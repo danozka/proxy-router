@@ -5,6 +5,7 @@
 .run/
 .venv/
 secrets/
+.coverage
 .dockerignore
 .env
 .gitignore

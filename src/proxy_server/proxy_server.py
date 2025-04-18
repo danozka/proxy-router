@@ -1,9 +1,10 @@
 import asyncio
 import logging
 from asyncio import Server, StreamReader, StreamWriter
+from contextvars import ContextVar
 from logging import Logger
 from pathlib import Path
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 from aiopath import AsyncPath
 from pydantic import TypeAdapter
@@ -16,9 +17,11 @@ from proxy_server.domain.request_method import RequestMethod
 from proxy_server.exceptions.empty_request_exception import EmptyRequestException
 from proxy_server.exceptions.proxy_not_found_exception import ProxyNotFoundException
 from proxy_server.request_adapter import RequestAdapter
-from proxy_server.request_context import request_id_context
 from proxy_server.services.i_proxy_router import IProxyRouter
 from proxy_server.services.i_request_authentication_adder import IRequestAuthenticationAdder
+
+
+request_id_context: ContextVar[UUID | None] = ContextVar('request_id', default=None)
 
 
 class ProxyServer:
@@ -31,14 +34,13 @@ class ProxyServer:
     _buffer_size_bytes: int
     _request_adapter: RequestAdapter
     _request_authentication_adder: IRequestAuthenticationAdder | None
-    _proxies: list[Proxy]
 
     def __init__(
         self,
         proxy_config_file_path: Path,
         proxy_router: IProxyRouter,
-        host='0.0.0.0',
-        port=8888,
+        host: str = '0.0.0.0',
+        port: int = 8888,
         timeout_seconds: float = 2.0,
         buffer_size_bytes: int = 4096,
         request_adapter: RequestAdapter = RequestAdapter(),
@@ -55,10 +57,8 @@ class ProxyServer:
 
     async def start(self) -> None:
         self._log.info('Starting server...')
-        async with self._proxy_config_file_path.open(mode='r') as file:
-            self._proxies = TypeAdapter(list[Proxy]).validate_json(await file.read())
         server: Server = await asyncio.start_server(
-            client_connected_cb=self._handle_request,
+            client_connected_cb=self.handle_request,
             host=self._host,
             port=self._port
         )
@@ -66,7 +66,7 @@ class ProxyServer:
             self._log.info(f'Server is running on http://{self._host}:{self._port}')
             await server.serve_forever()
 
-    async def _handle_request(self, client_reader: StreamReader, client_writer: StreamWriter) -> None:
+    async def handle_request(self, client_reader: StreamReader, client_writer: StreamWriter) -> None:
         client: Client | None = None
         proxy: Proxy | None = None
         request_id_context.set(uuid4())
@@ -79,11 +79,13 @@ class ProxyServer:
                 buffer_size_bytes=self._buffer_size_bytes
             )
             request: Request | None = self._request_adapter.adapt_request_from_bytes(await client.read())
-            if not request:
+            if request is None:
                 raise EmptyRequestException
             self._log.info(f'Handling {request}...')
             proxy_id: str = await self._proxy_router.route_request_to_proxy(request)
-            proxy = next((x for x in self._proxies if x.id == proxy_id), None)
+            async with self._proxy_config_file_path.open(mode='r') as file:
+                proxies: list[Proxy] = TypeAdapter(list[Proxy]).validate_json(await file.read())
+            proxy = next((x for x in proxies if x.id == proxy_id), None)
             if proxy is None:
                 raise ProxyNotFoundException(proxy_id)
             if self._request_authentication_adder is not None:
