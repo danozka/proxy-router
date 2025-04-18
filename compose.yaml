@@ -2,7 +2,7 @@ services:
   proxy-router:
     build:
       args:
-        - PYTHON_VERSION=3.11
+        - PYTHON_VERSION=3.12
       context: .
       dockerfile: ./Dockerfile
     container_name: proxy-router
