@@ -1,4 +1,7 @@
 # <img width="24px" src="./images/logo.png"></img> proxy-router
+
+---
+
 ## 🚀 The developer-friendly proxy solution for complex environments
 **Tired of juggling multiple proxies and constantly updating credentials across tools?**<br>
 
@@ -9,9 +12,11 @@ workflows running smoothly.
 * [How it works?](#-how-it-works)
 * [Quick start](#-quick-start)
 * [Key features](#-key-features)
-* [Deployment options](#-deployment-options)
+* [Environment variables](#-environment-variables)
 * [Updating credentials? Just edit one file](#-updating-credentials-just-edit-one-file)
 * [Contribute & customize](#-contribute--customize)
+
+---
 
 ## 🔥 Why proxy-router?
 - ### The problem
@@ -25,6 +30,8 @@ workflows running smoothly.
   - **Zero downtime** – Change credentials without restarting tools
   - **Docker-friendly** – Deploy in seconds, works seamlessly in dev environments
 
+---
+
 ## 🛠️ How it works?
 1. **Intercepts** requests from any tool (`git`, `npm`, `curl`, etc.)
 2. **Match** the hostname against your routing rules
@@ -32,6 +39,8 @@ workflows running smoothly.
 4. **Route** the request to the right proxy – automatically
 
 <img width="100%" src="./images/workflow.png"></img>
+
+---
 
 ## ⚡ Quick start
 ### 1. Configure once, forget forever
@@ -137,14 +146,17 @@ Define your proxies, credentials, and routing rules in simple JSON files:
   export http_proxy=http://localhost:8888
   ```  
 
+---
+
 ## 🎯 Key features
 - **Wildcard host matching** – Route `*.internal.com` and `api.external.com` differently
 - **Dynamic auth headers** – No more editing `.npmrc` or `.gitconfig` for password changes
 - **Lightweight & fast** – Low-latency forwarding with configurable timeouts
 - **Docker & CI-ready** – Prebuilt image + compose support
 
-## 📦 Deployment options
-### Environment variables
+---
+
+## 📦 Environment variables
 |           **Variable**           |    **Default**    |                    **Description**                    |
 |:--------------------------------:|:-----------------:|:-----------------------------------------------------:|
 |         `LOGGING_LEVEL`          |       INFO        |              Logging level of the proxy               |
@@ -156,11 +168,14 @@ Define your proxies, credentials, and routing rules in simple JSON files:
 |       `PROXY_SERVER_PORT`        |       8888        |          Port that the proxy will listen to           |
 |  `PROXY_SERVER_TIMEOUT_SECONDS`  |        2.0        |    Time in seconds to shutdown unused connections     |
 
+---
 
 ## 🔄 Updating credentials? Just edit one file
 **No restarts. No tool reconfigurations.**
 
 Change [auth.json](./resources/auth.json), and **proxy-router** handles the rest.
+
+---
 
 ## 🤝 Contribute & customize
 PRs welcome! Licensed under [MIT](./LICENSE).
