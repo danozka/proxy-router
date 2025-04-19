@@ -9,7 +9,7 @@ workflows running smoothly.
 * [How it works?](#-how-it-works)
 * [Quick start](#-quick-start)
 * [Key features](#-key-features)
-* [Deployment options](#d-eployment-options)
+* [Deployment options](#-deployment-options)
 * [Updating credentials? Just edit one file](#-updating-credentials-just-edit-one-file)
 * [Contribute & customize](#-contribute--customize)
 
@@ -145,16 +145,16 @@ Define your proxies, credentials, and routing rules in simple JSON files:
 
 ## 📦 Deployment options
 ### Environment variables
-| **Variable**                     | **Default**       | **Description**                                       |
-|----------------------------------|-------------------|-------------------------------------------------------|
-| `LOGGING_LEVEL`                  | INFO              | Logging level of the proxy                            |
-| `AUTH_CONFIG_FILE_PATH`          | /app/auth.json    | Path to the authentication configuration file         |
-| `ROUTING_CONFIG_FILE_PATH`       | /app/routing.json | Path to the routing rules configuration file          |
-| `PROXY_CONFIG_FILE_PATH`         | /app/proxy.json   | Path to the proxies configuration file                |
-| `PROXY_SERVER_BUFFER_SIZE_BYTES` | 4096              | Buffer size in bytes of each streaming request reader |
-| `PROXY_SERVER_HOST`              | 0.0.0.0           | Hostname that the proxy will be bound to              |
-| `PROXY_SERVER_PORT`              | 8888              | Port that the proxy will listen to                    |
-| `PROXY_SERVER_TIMEOUT_SECONDS`   | 2.0               | Time in seconds to shutdown unused connections        |
+|           **Variable**           |    **Default**    |                    **Description**                    |
+|:--------------------------------:|:-----------------:|:-----------------------------------------------------:|
+|         `LOGGING_LEVEL`          |       INFO        |              Logging level of the proxy               |
+|     `AUTH_CONFIG_FILE_PATH`      |  /app/auth.json   |     Path to the authentication configuration file     |
+|    `ROUTING_CONFIG_FILE_PATH`    | /app/routing.json |     Path to the routing rules configuration file      |
+|     `PROXY_CONFIG_FILE_PATH`     |  /app/proxy.json  |        Path to the proxies configuration file         |
+| `PROXY_SERVER_BUFFER_SIZE_BYTES` |       4096        | Buffer size in bytes of each streaming request reader |
+|       `PROXY_SERVER_HOST`        |      0.0.0.0      |       Hostname that the proxy will be bound to        |
+|       `PROXY_SERVER_PORT`        |       8888        |          Port that the proxy will listen to           |
+|  `PROXY_SERVER_TIMEOUT_SECONDS`  |        2.0        |    Time in seconds to shutdown unused connections     |
 
 
 ## 🔄 Updating credentials? Just edit one file
