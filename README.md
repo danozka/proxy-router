@@ -1,18 +1,19 @@
 # <img width="24px" src="./images/logo.png"></img> proxy-router
-## The developer-friendly proxy solution for complex environments
+## 🚀 The developer-friendly proxy solution for complex environments
 **Tired of juggling multiple proxies and constantly updating credentials across tools?**<br>
+
 **proxy-router** is your one-stop solution to simplify proxy management, eliminate hardcoded secrets, and keep your 
 workflows running smoothly.
 
-* [Why proxy-router?](#why-proxy-router)
-* [How it works?](#how-it-works)
-* [Quick start](#quick-start)
-* [Key features](#key-features)
-* [Deployment options](#deployment-options)
-* [Updating credentials? Just edit one file](#updating-credentials-just-edit-one-file)
-* [Contribute & customize](#contribute--customize)
+* [Why proxy-router?](#-why-proxy-router)
+* [How it works?](#-how-it-works)
+* [Quick start](#-quick-start)
+* [Key features](#-key-features)
+* [Deployment options](#d-eployment-options)
+* [Updating credentials? Just edit one file](#-updating-credentials-just-edit-one-file)
+* [Contribute & customize](#-contribute--customize)
 
-## Why proxy-router?
+## 🔥 Why proxy-router?
 - ### The problem
   - **Broken workflows** when proxy passwords rotate (and you forget to update `git`, `npm`, `curl`, etc.)
   - **Hardcoded credentials** in config files (security risk + maintenance nightmare)
@@ -24,7 +25,7 @@ workflows running smoothly.
   - **Zero downtime** – Change credentials without restarting tools
   - **Docker-friendly** – Deploy in seconds, works seamlessly in dev environments
 
-## How it works?
+## 🛠️ How it works?
 1. **Intercepts** requests from any tool (`git`, `npm`, `curl`, etc.)
 2. **Match** the hostname against your routing rules
 3. **Inject** the correct proxy credentials (no manual auth setup!) 
@@ -32,7 +33,7 @@ workflows running smoothly.
 
 <img width="100%" src="./images/workflow.png"></img>
 
-## Quick start
+## ⚡ Quick start
 ### 1. Configure once, forget forever
 Define your proxies, credentials, and routing rules in simple JSON files:
 
@@ -136,13 +137,13 @@ Define your proxies, credentials, and routing rules in simple JSON files:
   export http_proxy=http://localhost:8888
   ```  
 
-## Key features
+## 🎯 Key features
 - **Wildcard host matching** – Route `*.internal.com` and `api.external.com` differently
 - **Dynamic auth headers** – No more editing `.npmrc` or `.gitconfig` for password changes
 - **Lightweight & fast** – Low-latency forwarding with configurable timeouts
 - **Docker & CI-ready** – Prebuilt image + compose support
 
-## Deployment options
+## 📦 Deployment options
 ### Environment variables
 | **Variable**                     | **Default**       | **Description**                                       |
 |----------------------------------|-------------------|-------------------------------------------------------|
@@ -156,10 +157,10 @@ Define your proxies, credentials, and routing rules in simple JSON files:
 | `PROXY_SERVER_TIMEOUT_SECONDS`   | 2.0               | Time in seconds to shutdown unused connections        |
 
 
-## Updating credentials? Just edit one file
+## 🔄 Updating credentials? Just edit one file
 **No restarts. No tool reconfigurations.**
 
 Change [auth.json](./resources/auth.json), and **proxy-router** handles the rest.
 
-## Contribute & customize
+## 🤝 Contribute & customize
 PRs welcome! Licensed under [MIT](./LICENSE).
