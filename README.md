@@ -1,19 +1,18 @@
 # <img width="24px" src="./images/logo.png"></img> proxy-router
 ## The developer-friendly proxy solution for complex environments
-**Tired of juggling multiple proxies and constantly updating credentials across tools?**<br>
-
-**proxy-router** is your one-stop solution to simplify proxy management, eliminate hardcoded secrets, and keep your 
-workflows running smoothly.
-
 * [Why proxy-router?](#why-proxy-router)
 * [How it works?](#how-it-works)
-* [Quick start](#quick-start)
 * [Key features](#key-features)
+* [Quick start](#quick-start)
 * [Environment variables](#environment-variables)
 * [Updating credentials? Just edit one file](#updating-credentials-just-edit-one-file)
 * [Contribute & customize](#contribute--customize)
 
 ## Why proxy-router?
+If you are working in an **environment with multiple proxies**, each with its own authentication method, and you are 
+tired of constantly updating credentials across tools, **proxy-router** is your one-stop solution to **simplify 
+management**, **eliminate hardcoded secrets**, and **keep your workflows running smoothly from one place**.
+
 - ### The problem
   - **Broken workflows** when proxy passwords rotate (and you forget to update `git`, `npm`, `curl`, etc.)
   - **Hardcoded credentials** in config files (security risk + maintenance nightmare)
@@ -32,6 +31,12 @@ workflows running smoothly.
 4. **Route** the request to the right proxy – automatically
 
 <img width="100%" src="./images/workflow.png"></img>
+
+## Key features
+- **Wildcard host matching** – Route `*.internal.com` and `api.external.com` differently
+- **Dynamic auth headers** – No more editing `.npmrc` or `.gitconfig` for password changes
+- **Lightweight & fast** – Low-latency forwarding with configurable timeouts
+- **Docker & CI-ready** – Prebuilt image + compose support
 
 ## Quick start
 ### 1. Configure once, forget forever
@@ -136,12 +141,6 @@ Define your credentials, proxies, and routing rules in simple JSON files:
   ```bash
   export http_proxy=http://localhost:8888
   ```
-
-## Key features
-- **Wildcard host matching** – Route `*.internal.com` and `api.external.com` differently
-- **Dynamic auth headers** – No more editing `.npmrc` or `.gitconfig` for password changes
-- **Lightweight & fast** – Low-latency forwarding with configurable timeouts
-- **Docker & CI-ready** – Prebuilt image + compose support
 
 ## Environment variables
 |           **Variable**           |    **Default**    |                    **Description**                    |
