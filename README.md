@@ -152,7 +152,7 @@ Define your credentials, proxies, and routing rules in simple JSON files:
 | `PROXY_SERVER_BUFFER_SIZE_BYTES` |       4096        | Buffer size in bytes of each streaming request reader |
 |       `PROXY_SERVER_HOST`        |      0.0.0.0      |       Hostname that the proxy will be bound to        |
 |       `PROXY_SERVER_PORT`        |       8888        |          Port that the proxy will listen to           |
-|  `PROXY_SERVER_TIMEOUT_SECONDS`  |        2.0        |    Time in seconds to shutdown unused connections     |
+|  `PROXY_SERVER_TIMEOUT_SECONDS`  |       60.0        |    Time in seconds to shutdown unused connections     |
 
 ## Updating credentials? Just edit one file
 **No restarts. No tool reconfigurations.**

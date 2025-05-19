@@ -16,7 +16,7 @@ from proxy_server.proxy_server import ProxyServer
 
 HOST: str = '0.0.0.0'
 PORT: int = 8888
-TIMEOUT_SECONDS: float = 2.0
+TIMEOUT_SECONDS: float = 60.0
 BUFFER_SIZE_BYTES: int = 4096
 
 

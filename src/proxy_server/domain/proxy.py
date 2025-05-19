@@ -16,7 +16,7 @@ class Proxy(Connection, BaseModel):
     port: int = Field(repr=False)
     authentication_id: str = Field(repr=False)
 
-    async def connect(self, timeout_seconds: float = 2.0, buffer_size_bytes: int = 4096) -> None:
+    async def connect(self, timeout_seconds: float = 60.0, buffer_size_bytes: int = 4096) -> None:
         self._log.debug(f'Establishing connection with {self}...')
         self._reader, self._writer = await asyncio.open_connection(host=self.hostname, port=self.port)
         self._timeout_seconds = timeout_seconds

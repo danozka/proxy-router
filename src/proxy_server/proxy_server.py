@@ -41,7 +41,7 @@ class ProxyServer:
         proxy_router: IProxyRouter,
         host: str = '0.0.0.0',
         port: int = 8888,
-        timeout_seconds: float = 2.0,
+        timeout_seconds: float = 60.0,
         buffer_size_bytes: int = 4096,
         request_adapter: RequestAdapter = RequestAdapter(),
         request_authentication_adder: IRequestAuthenticationAdder | None = None

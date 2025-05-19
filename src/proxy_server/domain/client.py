@@ -8,7 +8,7 @@ class Client(Connection):
         self,
         reader: StreamReader,
         writer: StreamWriter,
-        timeout_seconds: float = 2.0,
+        timeout_seconds: float = 60.0,
         buffer_size_bytes: int = 4096
     ) -> None:
         self._reader = reader
